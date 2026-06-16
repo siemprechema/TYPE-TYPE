@@ -12,6 +12,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
 
     <style>
+        /* ========================================================
+        ¿TIENES EL ARCHIVO DE TELENEO VAR? 
+        1. Pon el archivo "TeleNeoVar.woff2" en la misma carpeta que este HTML.
+        2. Borra los "/*" y "*/" de abajo para activar la fuente.
+        3. En el panel lateral, el botón SANS usará TeleNeo.
+        ========================================================
+        @font-face {
+            font-family: 'TeleNeo Var';
+            src: url('TeleNeoVar.woff2') format('woff2-variations');
+            font-weight: 100 900;
+        }
+        */
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
@@ -255,7 +268,7 @@
         document.getElementById('btn-dark').addEventListener('click', () => document.body.classList.add('dark-mode'));
         document.getElementById('btn-light').addEventListener('click', () => document.body.classList.remove('dark-mode'));
 
-        // MOTOR GRÁFICO (Dinámico, Conciso y Estilo "Unwise")
+        // MOTOR GRÁFICO (Con Física de Empuje Activa)
         function drawFrame() {
             if (!isExporting) requestAnimationFrame(drawFrame);
 
@@ -283,61 +296,62 @@
             const duration = 2000; 
 
             lines.forEach(line => {
-                let lineWidth = 0;
-                const charWidths = [];
+                let dynamicCharData = [];
+                let dynamicLineWidth = 0;
                 
-                ctx.font = `500 ${fontSize}px ${fontFam}`; 
-                for(let i=0; i<line.length; i++) {
-                    const cw = ctx.measureText(line[i]).width;
-                    charWidths.push(cw);
-                    lineWidth += cw;
-                }
-                lineWidth += Math.max(0, line.length - 1) * tracking;
-
-                let startX = (canvasWidth - lineWidth) / 2;
-
+                // PASO 1: Calcular la física y tamaño exacto de cada letra para ESTE frame
                 for(let i=0; i<line.length; i++) {
                     const char = line[i];
-                    const cw = charWidths[i];
 
-                    // DESFASE AUMENTADO: Genera un alto contraste entre letras contiguas
                     let elapsed = currentTime - (globalCharIndex * 280); 
                     elapsed = ((elapsed % duration) + duration) % duration; 
                     let progress = elapsed / duration; 
 
-                    // ONDA "SNAPPY": Elevamos al cubo para que cambie agresivamente 
-                    // de un extremo a otro, matando el movimiento de "ola suave".
                     let baseWave = Math.sin(progress * Math.PI * 2);
                     let punchyWave = Math.pow(baseWave, 3); 
 
-                    // RANGO EXTREMO: De 100 (Ultra Light) a 900 (Black/Ultra)
                     let pulse = (punchyWave + 1) / 2;
                     let currentWeight = Math.floor(100 + (pulse * 800)); 
                     
-                    // ITALIC DINÁMICO: Inclinación lateral brusca usando Skew
                     let skewX = punchyWave * -0.35; 
-                    
-                    // ESTIRAMIENTO HORIZONTAL para darle más actitud al peso
                     let scaleX = 1 + (punchyWave * 0.2); 
                     let scaleY = 1 + (Math.abs(punchyWave) * 0.05);
 
-                    if (char !== ' ') {
+                    // Medimos el ancho exacto con la fuente y peso dinámico
+                    ctx.font = `${currentWeight} ${fontSize}px ${fontFam}`;
+                    let baseWidth = ctx.measureText(char).width;
+                    let currentDynamicWidth = baseWidth * scaleX;
+
+                    dynamicCharData.push({
+                        char, currentWeight, scaleX, scaleY, skewX, currentDynamicWidth
+                    });
+                    
+                    dynamicLineWidth += currentDynamicWidth;
+                    globalCharIndex++;
+                }
+                
+                dynamicLineWidth += Math.max(0, line.length - 1) * tracking;
+
+                // PASO 2: Dibujar empujando desde el centro calculado
+                let startX = (canvasWidth - dynamicLineWidth) / 2;
+
+                for(let i=0; i<line.length; i++) {
+                    let data = dynamicCharData[i];
+
+                    if (data.char !== ' ') {
                         ctx.save();
-                        ctx.font = `${currentWeight} ${fontSize}px ${fontFam}`;
+                        ctx.font = `${data.currentWeight} ${fontSize}px ${fontFam}`;
                         
-                        // Movemos el punto de origen al centro de la letra
-                        ctx.translate(startX + cw/2, startY);
+                        // Posición dinámica: usa el ancho físico real de las letras anteriores
+                        ctx.translate(startX + data.currentDynamicWidth/2, startY);
+                        ctx.transform(data.scaleX, 0, data.skewX, data.scaleY, 0, 0);
                         
-                        // Aplicamos escala y la simulación Italic al mismo tiempo
-                        // transform(scaleX, skewY, skewX, scaleY, translateX, translateY)
-                        ctx.transform(scaleX, 0, skewX, scaleY, 0, 0);
-                        
-                        ctx.fillText(char, 0, 0);
+                        ctx.fillText(data.char, 0, 0);
                         ctx.restore();
                     }
 
-                    startX += cw + tracking;
-                    globalCharIndex++;
+                    // EL EFECTO EMPUJE: La siguiente letra empieza exactamente donde termina el ancho actual
+                    startX += data.currentDynamicWidth + tracking;
                 }
                 startY += fontSize + lineHeight;
             });
