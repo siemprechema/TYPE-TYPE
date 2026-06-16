@@ -6,7 +6,7 @@
     <title>TYPE TYPE - Kinetic Typography Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Josefin+Sans:wght@100..700&family=Montserrat:wght@100..900&family=Outfit:wght@100..900&family=Roboto+Flex:wght@100..1000&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..800&family=Inter:wght@100..900&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
     <style>
         /* CSS RESET & VARIABLES */
         * {
@@ -34,7 +34,7 @@
 
             /* Tipografía y Espaciados */
             --font-ui: 'Inter', sans-serif;
-            --font-canvas: 'Roboto Flex', sans-serif;
+            --font-canvas: 'Inter', sans-serif; /* Iniciamos con Sans Serif */
             --tracking-canvas: 0px; 
             --line-spacing: 10px;
             
@@ -179,7 +179,7 @@
             flex-wrap: wrap;
         }
         .font-option {
-            width: 35px;
+            flex-grow: 1; /* Para que ocupen todo el ancho equitativamente */
             height: 35px;
             background: #fff;
             color: #000;
@@ -187,10 +187,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 900;
-            font-size: 18px;
+            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
-            font-family: var(--font-ui);
         }
         .font-option.active {
             background: var(--color-button-pink);
@@ -244,7 +243,8 @@
             border: 4px solid var(--color-outline);
             box-shadow: var(--box-shadow-retro);
             width: 100%;
-            max-width: 900px;
+            max-width: 900px; /* Ancho máximo para que no se desborde */
+            max-height: 80vh; /* Alto máximo para mantenerlo en pantalla */
             display: flex;
             flex-direction: column;
         }
@@ -269,7 +269,7 @@
 
         .canvas-body {
             width: 100%;
-            min-height: 400px; 
+            min-height: 300px; 
             background-color: var(--bg-canvas);
             display: flex;
             align-items: center;
@@ -313,21 +313,21 @@
             margin-top: var(--line-spacing);
         }
 
-        /* Keyframes para la ola infinita */
+        /* Animación adaptada a un rango seguro de peso (400 a 700) para que 
+           todas las 3 tipografías funcionen perfectamente sin romperse */
         @keyframes autoKineticWave {
             0%, 100% {
-                font-weight: 200;
+                font-weight: 400;
                 transform: scale(1) translateY(0);
             }
             50% {
-                font-weight: 900;
+                font-weight: 700;
                 transform: scale(1.15) translateY(-5px);
             }
         }
 
         .kinetic-line span {
             display: inline-block;
-            /* La animación es infinita y fluida */
             animation: autoKineticWave 1.5s infinite ease-in-out;
             transform-origin: center center;
         }
@@ -382,13 +382,11 @@
         </div>
 
         <div class="control-group">
-            <label class="control-label">Tipografía (Variables)</label>
+            <label class="control-label">Tipografía</label>
             <div class="font-selector">
-                <div class="font-option active" style="font-family: 'Roboto Flex';" title="Roboto Flex" data-font="'Roboto Flex'">R</div>
-                <div class="font-option" style="font-family: 'Montserrat';" title="Montserrat" data-font="'Montserrat'">M</div>
-                <div class="font-option" style="font-family: 'Outfit';" title="Outfit" data-font="'Outfit'">O</div>
-                <div class="font-option" style="font-family: 'Inter';" title="Inter" data-font="'Inter'">I</div>
-                <div class="font-option" style="font-family: 'Josefin Sans';" title="Josefin Sans" data-font="'Josefin Sans'">J</div>
+                <div class="font-option active" style="font-family: 'Inter', sans-serif;" title="Sans Serif" data-font="'Inter', sans-serif">SANS</div>
+                <div class="font-option" style="font-family: 'EB Garamond', serif;" title="Serif" data-font="'EB Garamond', serif">SERIF</div>
+                <div class="font-option" style="font-family: 'Pixelify Sans', monospace;" title="Bitmap" data-font="'Pixelify Sans', monospace">BITMAP</div>
             </div>
         </div>
 
@@ -420,15 +418,13 @@
                 <div class="window-control"></div>
                 <div class="window-control"></div>
             </div>
-            <!-- Canvas actualizado a 3:4 por defecto -->
-            <div class="canvas-body" id="canvas-area" style="aspect-ratio: 3/4;">
+            <div class="canvas-body" id="canvas-area" style="aspect-ratio: 1/1;">
                 <div class="kinetic-container" id="kinetic-container"></div>
             </div>
         </div>
 
         <div class="aspect-controls">
-            <!-- Botones de aspecto actualizados -->
-            <button class="aspect-button active" data-aspect="3/4">3:4</button>
+            <button class="aspect-button active" data-aspect="1/1">1:1</button>
             <button class="aspect-button" data-aspect="16/9">16:9</button>
         </div>
     </main>
@@ -449,8 +445,6 @@
         function renderKineticText(text) {
             kineticContainer.innerHTML = ''; 
             const lines = text.split('\n').slice(0, 3);
-            
-            // Índice global para crear el efecto de ola continua en todo el párrafo
             let globalCharIndex = 0; 
 
             lines.forEach(line => {
@@ -466,7 +460,6 @@
                         span.textContent = char;
                     }
                     
-                    // Asignamos el delay dinámicamente para que corra de izquierda a derecha
                     span.style.animationDelay = `${globalCharIndex * 0.1}s`;
                     globalCharIndex++;
 
