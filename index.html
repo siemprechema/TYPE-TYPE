@@ -6,49 +6,29 @@
     <title>TYPE TYPE - Kinetic Typography Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Variable fonts for Canvas + Space Mono for UI -->
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..800&family=Inter:wght@100..900&family=Pixelify+Sans:wght@400..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     
-    <!-- Librería externa para codificar el GIF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
 
     <style>
-        /* CSS RESET & VARIABLES */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            /* Base Colors */
             --bg-main: #f0f0f0;
-            --bg-canvas: #ffeb3b;
             --bg-sidebar: #4caf50;
-            --color-text-canvas: #000000;
             --color-outline: #000000;
             --color-shadow: #000000;
-            
-            /* Button Colors */
             --color-button-pink: #e91e63;
             --color-button-purple: #9c27b0;
             --color-button-orange: #ff9800;
             --color-button-yellow: #ffeb3b;
             --color-button-white: #ffffff;
             --color-button-black: #000000;
-
-            /* Typography and Spacing */
             --font-ui: 'Space Mono', monospace; 
-            --font-canvas: 'Inter', sans-serif;
-            --tracking-canvas: 0px; 
-            --line-spacing: 10px;
-            
-            /* Retro 3D Shadow */
             --box-shadow-retro: 6px 6px 0px 0px var(--color-shadow);
             --box-shadow-retro-small: 3px 3px 0px 0px var(--color-shadow);
         }
 
-        /* DARK MODE */
         body.dark-mode {
             --bg-main: #212121;
             --color-outline: #ffffff;
@@ -59,7 +39,6 @@
         body.dark-mode .canvas-window { border-color: #fff; }
         body.dark-mode .canvas-header { background-color: #fff; }
 
-        /* BASE LAYOUT (Mobile First) */
         body {
             font-family: var(--font-ui);
             background-color: var(--bg-main);
@@ -70,7 +49,6 @@
             overflow-y: auto;
         }
 
-        /* HEADER */
         header {
             background-color: var(--bg-main);
             border-bottom: 4px solid var(--color-outline);
@@ -80,285 +58,72 @@
             z-index: 10;
         }
 
-        .logo {
-            font-size: 26px;
-            font-weight: 700; 
-            text-transform: uppercase;
-            color: var(--color-outline);
-            letter-spacing: 2px;
-        }
+        .logo { font-size: 26px; font-weight: 700; text-transform: uppercase; color: var(--color-outline); letter-spacing: 2px; }
 
-        /* SIDEBAR (Tools) */
-        .sidebar {
-            background-color: var(--bg-sidebar);
-            border-bottom: 4px solid var(--color-outline);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 5;
-        }
+        .sidebar { background-color: var(--bg-sidebar); border-bottom: 4px solid var(--color-outline); padding: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 5; }
 
-        /* MAIN CANVAS AREA */
         .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             background-image: linear-gradient(var(--bg-main) 1px, transparent 1px), linear-gradient(90deg, var(--bg-main) 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-color: #e0e0e0;
-            padding: 20px;
-            flex-grow: 1;
-            position: relative;
+            background-size: 20px 20px; background-color: #e0e0e0; padding: 20px; flex-grow: 1; position: relative;
         }
 
-        /* DESKTOP LAYOUT (Media Query) */
         @media (min-width: 800px) {
-            body {
-                display: grid;
-                grid-template-columns: 320px 1fr;
-                grid-template-rows: 60px 1fr;
-                overflow: hidden;
-                height: 100vh;
-            }
+            body { display: grid; grid-template-columns: 320px 1fr; grid-template-rows: 60px 1fr; overflow: hidden; height: 100vh; }
             header { grid-column: 1 / 3; grid-row: 1 / 2; }
-            .sidebar { 
-                grid-column: 1 / 2; 
-                grid-row: 2 / 3; 
-                border-right: 4px solid var(--color-outline); 
-                border-bottom: none; 
-                overflow-y: auto; 
-                box-shadow: var(--box-shadow-retro);
-            }
+            .sidebar { grid-column: 1 / 2; grid-row: 2 / 3; border-right: 4px solid var(--color-outline); border-bottom: none; overflow-y: auto; box-shadow: var(--box-shadow-retro); }
             .main-content { grid-column: 2 / 3; grid-row: 2 / 3; }
         }
 
-        /* BUTTONS & CONTROLS */
         .retro-button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            font-family: var(--font-ui);
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-align: center;
-            color: var(--color-outline);
-            background-color: var(--color-button-pink);
-            border: 3px solid var(--color-outline);
-            box-shadow: var(--box-shadow-retro-small);
-            transition: all 0.1s ease;
-            cursor: pointer;
+            display: block; width: 100%; padding: 15px; font-family: var(--font-ui); font-size: 14px; font-weight: 700;
+            text-transform: uppercase; text-align: center; color: var(--color-outline); background-color: var(--color-button-pink);
+            border: 3px solid var(--color-outline); box-shadow: var(--box-shadow-retro-small); cursor: pointer;
         }
-        .retro-button:active {
-            transform: translate(3px, 3px);
-            box-shadow: none;
-        }
-        .retro-button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .retro-button:active { transform: translate(3px, 3px); box-shadow: none; }
+        .retro-button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
         .retro-button.purple { background-color: var(--color-button-purple); }
         .retro-button.orange { background-color: var(--color-button-orange); }
         .retro-button.yellow { background-color: var(--color-button-yellow); }
         .retro-button.white { background-color: var(--color-button-white); color: #000000; }
         .retro-button.black { background-color: var(--color-button-black); color: #ffffff; }
 
-        .control-group {
-            border: 2px solid var(--color-outline);
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #000;
-        }
+        .control-group { border: 2px solid var(--color-outline); padding: 10px; background-color: rgba(255, 255, 255, 0.9); color: #000; }
         body.dark-mode .control-group { background-color: #333; color: #fff; border-color: #fff; }
+        .control-label { font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; display: block; }
 
-        .control-label {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .retro-input {
-            width: 100%;
-            padding: 10px;
-            font-family: var(--font-ui);
-            font-weight: 700;
-            font-size: 16px;
-            border: 3px solid var(--color-outline);
-            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
-            resize: none;
-            background-color: #fff;
-            color: #000;
-        }
+        .retro-input { width: 100%; padding: 10px; font-family: var(--font-ui); font-weight: 700; font-size: 16px; border: 3px solid var(--color-outline); box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1); resize: none; }
         .retro-input:focus { outline: none; border-color: var(--color-button-pink); }
 
-        .slider-control {
-            width: 100%;
-            height: 10px;
-            -webkit-appearance: none;
-            background: #ccc;
-            border: 2px solid #000;
-            outline: none;
-            cursor: pointer;
-        }
-        .slider-control::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: var(--color-button-orange);
-            border: 2px solid #000;
-        }
+        .slider-control { width: 100%; height: 10px; -webkit-appearance: none; background: #ccc; border: 2px solid #000; outline: none; cursor: pointer; }
+        .slider-control::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--color-button-orange); border: 2px solid #000; }
 
-        .font-selector {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-        .font-option {
-            flex-grow: 1;
-            height: 35px;
-            background: #fff;
-            color: #000;
-            border: 2px solid #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            font-family: var(--font-ui);
-        }
-        .font-option.active {
-            background: var(--color-button-pink);
-            color: #fff;
-        }
+        .font-selector { display: flex; gap: 5px; flex-wrap: wrap; }
+        .font-option { flex-grow: 1; height: 35px; background: #fff; color: #000; border: 2px solid #000; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; cursor: pointer; font-family: var(--font-ui); }
+        .font-option.active { background: var(--color-button-pink); color: #fff; }
 
         .color-pickers { display: flex; gap: 10px; }
-        .color-input {
-            -webkit-appearance: none;
-            border: 3px solid #000;
-            width: 50%;
-            height: 40px;
-            padding: 0;
-            cursor: pointer;
-            box-shadow: 2px 2px 0px #000;
-        }
+        .color-input { -webkit-appearance: none; border: 3px solid #000; width: 50%; height: 40px; padding: 0; cursor: pointer; box-shadow: 2px 2px 0px #000; }
         .color-input::-webkit-color-swatch-wrapper { padding: 0; }
         .color-input::-webkit-color-swatch { border: none; }
-
         .mode-switch { display: flex; gap: 10px; }
 
-        .canvas-window {
-            background-color: #fff;
-            border: 4px solid var(--color-outline);
-            box-shadow: var(--box-shadow-retro);
-            width: 100%;
-            max-width: 900px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .canvas-header {
-            height: 30px;
-            background-color: var(--color-outline);
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            gap: 6px;
-        }
-        .window-control {
-            width: 12px; height: 12px;
-            border-radius: 50%;
-            background-color: #fff;
-            border: 2px solid #000;
-        }
+        .canvas-window { background-color: #fff; border: 4px solid var(--color-outline); box-shadow: var(--box-shadow-retro); width: 100%; max-width: 900px; max-height: 80vh; display: flex; flex-direction: column; }
+        .canvas-header { height: 30px; background-color: var(--color-outline); display: flex; align-items: center; padding: 0 10px; gap: 6px; }
+        .window-control { width: 12px; height: 12px; border-radius: 50%; background-color: #fff; border: 2px solid #000; }
         .window-control:nth-child(1) { background-color: #ff5f56; }
         .window-control:nth-child(2) { background-color: #ffbd2e; }
         .window-control:nth-child(3) { background-color: #27c93f; }
 
-        .canvas-body {
-            width: 100%;
-            min-height: 300px; 
-            background-color: var(--bg-canvas);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: aspect-ratio 0.3s ease, background-color 0.3s ease;
-            overflow: hidden;
-            cursor: none; 
-            position: relative;
-        }
+        .canvas-body { width: 100%; min-height: 300px; display: flex; align-items: center; justify-content: center; transition: aspect-ratio 0.3s ease; overflow: hidden; cursor: none; position: relative; }
+        
+        /* THE NATIVE CANVAS */
+        #main-canvas { width: 100%; height: 100%; display: block; }
 
-        /* CUSTOM CURSOR */
-        #custom-cursor {
-            position: fixed;
-            width: 32px;
-            height: 32px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffeb3b' stroke='%23000000' stroke-width='2'%3E%3Cpath d='M4 4l8 20 4-8 8-4-20-8z'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-            pointer-events: none;
-            z-index: 9999;
-            display: none;
-        }
+        #custom-cursor { position: fixed; width: 32px; height: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffeb3b' stroke='%23000000' stroke-width='2'%3E%3Cpath d='M4 4l8 20 4-8 8-4-20-8z'/%3E%3C/svg%3E"); background-size: contain; background-repeat: no-repeat; pointer-events: none; z-index: 9999; display: none; }
 
-        /* AUTO KINETIC TEXT */
-        .kinetic-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .kinetic-line {
-            display: flex;
-            justify-content: center;
-            font-family: var(--font-canvas);
-            font-size: 80px; 
-            color: var(--color-text-canvas);
-            letter-spacing: var(--tracking-canvas); 
-        }
-
-        .kinetic-line:not(:first-child) {
-            margin-top: var(--line-spacing);
-        }
-
-        @keyframes autoKineticWave {
-            0%, 100% {
-                font-weight: 400;
-                transform: scale(1) translateY(0);
-            }
-            50% {
-                font-weight: 700;
-                transform: scale(1.15) translateY(-5px);
-            }
-        }
-
-        .kinetic-line span {
-            display: inline-block;
-            animation: autoKineticWave 1.5s infinite ease-in-out;
-            transform-origin: center center;
-        }
-
-        .aspect-controls {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-        }
-        .aspect-button {
-            padding: 8px 15px;
-            font-size: 14px;
-            font-weight: 700;
-            border: 3px solid var(--color-outline);
-            background: #fff;
-            cursor: pointer;
-            box-shadow: 2px 2px 0px var(--color-shadow);
-            font-family: var(--font-ui);
-        }
+        .aspect-controls { margin-top: 20px; display: flex; gap: 10px; }
+        .aspect-button { padding: 8px 15px; font-size: 14px; font-weight: 700; border: 3px solid var(--color-outline); background: #fff; cursor: pointer; box-shadow: 2px 2px 0px var(--color-shadow); font-family: var(--font-ui); }
         .aspect-button.active { background-color: var(--color-button-yellow); }
         body.dark-mode .aspect-button { background-color: #333; color: #fff; border-color:#fff; }
         body.dark-mode .aspect-button.active { background-color: var(--color-button-purple); }
@@ -378,45 +143,37 @@
             <label class="control-label">Type your word</label>
             <textarea id="text-input" class="retro-input" rows="2" placeholder="Type here... Max 3 lines">ExPeriMent</textarea>
         </div>
-
         <div class="control-group">
             <label class="control-label">Size</label>
             <input type="range" id="size-slider" min="30" max="150" value="80" class="slider-control">
         </div>
-
         <div class="control-group">
             <label class="control-label">Tracking</label>
             <input type="range" id="tracking-slider" min="-10" max="50" value="0" class="slider-control">
         </div>
-
         <div class="control-group">
             <label class="control-label">Line Height</label>
             <input type="range" id="line-height-slider" min="-50" max="80" value="10" class="slider-control">
         </div>
-
         <div class="control-group">
             <label class="control-label">Typeface</label>
             <div class="font-selector">
-                <div class="font-option active" style="font-family: 'Inter', sans-serif;" title="Sans Serif" data-font="'Inter', sans-serif">SANS</div>
-                <div class="font-option" style="font-family: 'EB Garamond', serif;" title="Serif" data-font="'EB Garamond', serif">SERIF</div>
-                <div class="font-option" style="font-family: 'Pixelify Sans', monospace;" title="Bitmap" data-font="'Pixelify Sans', monospace">BITMAP</div>
+                <div class="font-option active" data-font="'Inter', sans-serif">SANS</div>
+                <div class="font-option" data-font="'EB Garamond', serif">SERIF</div>
+                <div class="font-option" data-font="'Pixelify Sans', monospace">BITMAP</div>
             </div>
         </div>
-
         <div class="control-group">
             <label class="control-label">Color (Canvas / Text)</label>
             <div class="color-pickers">
-                <input type="color" id="bg-color-picker" value="#ffeb3b" class="color-input" title="Canvas Background">
-                <input type="color" id="text-color-picker" value="#000000" class="color-input" title="Text Color">
+                <input type="color" id="bg-color-picker" value="#ffeb3b" class="color-input">
+                <input type="color" id="text-color-picker" value="#000000" class="color-input">
             </div>
         </div>
-
         <div class="control-group mode-switch">
             <button id="btn-light" class="retro-button white" style="width:50%;">LIGHT</button>
             <button id="btn-dark" class="retro-button black" style="width:50%;">DARK</button>
         </div>
-
-        <!-- Botón de Exportación -->
         <button id="export-btn" class="retro-button purple">EXPORT GIF</button>
     </aside>
 
@@ -427,12 +184,10 @@
                 <div class="window-control"></div>
                 <div class="window-control"></div>
             </div>
-            <!-- Canvas target -->
             <div class="canvas-body" id="canvas-area" style="aspect-ratio: 1/1;">
-                <div class="kinetic-container" id="kinetic-container"></div>
+                <canvas id="main-canvas"></canvas>
             </div>
         </div>
-
         <div class="aspect-controls">
             <button class="aspect-button active" data-aspect="1/1">1:1</button>
             <button class="aspect-button" data-aspect="16/9">16:9</button>
@@ -440,214 +195,210 @@
     </main>
 
     <script>
-        // Funciones encapsuladas para evitar que errores bloqueen la página entera
-        try {
-            const textInput = document.getElementById('text-input');
-            const kineticContainer = document.getElementById('kinetic-container');
-            const sizeSlider = document.getElementById('size-slider');
-            const trackingSlider = document.getElementById('tracking-slider');
-            const lineHeightSlider = document.getElementById('line-height-slider');
-            const fontOptions = document.querySelectorAll('.font-option');
-            const bgColorPicker = document.getElementById('bg-color-picker');
-            const textColorPicker = document.getElementById('text-color-picker');
-            const aspectButtons = document.querySelectorAll('.aspect-button');
-            const canvasArea = document.getElementById('canvas-area');
-            const customCursor = document.getElementById('custom-cursor');
-            const exportBtn = document.getElementById('export-btn');
-            
-            function renderKineticText(text) {
-                kineticContainer.innerHTML = ''; 
-                const lines = text.split('\n').slice(0, 3);
-                let globalCharIndex = 0; 
+        const canvas = document.getElementById('main-canvas');
+        const ctx = canvas.getContext('2d');
+        const canvasArea = document.getElementById('canvas-area');
+        
+        const textInput = document.getElementById('text-input');
+        const sizeSlider = document.getElementById('size-slider');
+        const trackingSlider = document.getElementById('tracking-slider');
+        const lineHeightSlider = document.getElementById('line-height-slider');
+        const fontOptions = document.querySelectorAll('.font-option');
+        const bgColorPicker = document.getElementById('bg-color-picker');
+        const textColorPicker = document.getElementById('text-color-picker');
+        const aspectButtons = document.querySelectorAll('.aspect-button');
+        const customCursor = document.getElementById('custom-cursor');
+        const exportBtn = document.getElementById('export-btn');
 
-                lines.forEach(line => {
-                    const lineDiv = document.createElement('div');
-                    lineDiv.className = 'kinetic-line';
-                    lineDiv.style.fontSize = `${sizeSlider.value}px`;
-                    
-                    line.split('').forEach(char => {
-                        const span = document.createElement('span');
-                        if(char === ' ') {
-                            span.innerHTML = '&nbsp;'; 
-                        } else {
-                            span.textContent = char;
-                        }
-                        
-                        span.style.animationDelay = `${globalCharIndex * 0.1}s`;
-                        globalCharIndex++;
+        let canvasWidth = 0;
+        let canvasHeight = 0;
+        let isExporting = false;
+        let exportTime = 0;
 
-                        lineDiv.appendChild(span);
-                    });
-                    kineticContainer.appendChild(lineDiv);
-                });
-            }
-
-            renderKineticText(textInput.value);
-            textInput.addEventListener('input', (e) => {
-                renderKineticText(e.target.value);
-            });
-
-            canvasArea.addEventListener('mouseenter', () => customCursor.style.display = 'block');
-            canvasArea.addEventListener('mouseleave', () => customCursor.style.display = 'none');
-            
-            document.addEventListener('mousemove', (e) => {
-                if(customCursor.style.display === 'block') {
-                    customCursor.style.left = (e.clientX - 5) + 'px';
-                    customCursor.style.top = (e.clientY - 5) + 'px';
-                }
-            });
-
-            sizeSlider.addEventListener('input', (e) => {
-                const lines = document.querySelectorAll('.kinetic-line');
-                lines.forEach(line => line.style.fontSize = `${e.target.value}px`);
-            });
-
-            trackingSlider.addEventListener('input', (e) => {
-                document.documentElement.style.setProperty('--tracking-canvas', `${e.target.value}px`);
-            });
-
-            lineHeightSlider.addEventListener('input', (e) => {
-                document.documentElement.style.setProperty('--line-spacing', `${e.target.value}px`);
-            });
-
-            fontOptions.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    fontOptions.forEach(opt => opt.classList.remove('active'));
-                    btn.classList.add('active');
-                    const fontName = btn.getAttribute('data-font');
-                    document.documentElement.style.setProperty('--font-canvas', fontName);
-                });
-            });
-
-            bgColorPicker.addEventListener('input', (e) => {
-                document.documentElement.style.setProperty('--bg-canvas', e.target.value);
-            });
-            textColorPicker.addEventListener('input', (e) => {
-                document.documentElement.style.setProperty('--color-text-canvas', e.target.value);
-            });
-
-            aspectButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    aspectButtons.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    canvasArea.style.aspectRatio = btn.getAttribute('data-aspect');
-                });
-            });
-
-            document.getElementById('btn-dark').addEventListener('click', () => document.body.classList.add('dark-mode'));
-            document.getElementById('btn-light').addEventListener('click', () => document.body.classList.remove('dark-mode'));
-
-            // EXPORT GIF LOGIC CON VALIDACIONES
-            exportBtn.addEventListener('click', async function() {
-                // Validación 1: Checar si la librería cargó
-                if (typeof gifshot === 'undefined') {
-                    alert("Error: The GIF processing library did not load properly. Please check your internet connection or disable any adblockers/tracking protection for this site.");
-                    return;
-                }
-
-                // Validación 2: Checar si el navegador permite grabar
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
-                    alert("Error: Your current browser or device does not support screen capture (This is very common on mobile phones). Please try using a desktop computer with Chrome, Edge, or Safari.");
-                    return;
-                }
-
-                try {
-                    const stream = await navigator.mediaDevices.getDisplayMedia({
-                        video: { preferCurrentTab: true },
-                        audio: false
-                    });
-
-                    exportBtn.textContent = 'RECORDING...';
-                    exportBtn.style.backgroundColor = 'var(--color-button-pink)';
-                    exportBtn.disabled = true;
-                    customCursor.style.display = 'none';
-
-                    const video = document.createElement('video');
-                    video.srcObject = stream;
-                    video.play();
-
-                    await new Promise(r => video.onplaying = r);
-
-                    const rect = canvasArea.getBoundingClientRect();
-                    const cropCanvas = document.createElement('canvas');
-                    
-                    const scaleX = video.videoWidth / window.innerWidth;
-                    const scaleY = video.videoHeight / window.innerHeight;
-                    
-                    cropCanvas.width = rect.width;
-                    cropCanvas.height = rect.height;
-                    const ctx = cropCanvas.getContext('2d');
-
-                    const frames = [];
-                    const fps = 15; 
-                    const intervalTime = 1000 / fps;
-                    const animationDuration = 1500; 
-                    let elapsed = 0;
-
-                    const captureInterval = setInterval(() => {
-                        ctx.drawImage(
-                            video, 
-                            rect.left * scaleX, rect.top * scaleY, rect.width * scaleX, rect.height * scaleY, 
-                            0, 0, cropCanvas.width, cropCanvas.height
-                        );
-                        
-                        frames.push(cropCanvas.toDataURL('image/png'));
-                        
-                        elapsed += intervalTime;
-                        if (elapsed >= animationDuration) {
-                            clearInterval(captureInterval);
-                            stream.getTracks().forEach(t => t.stop()); 
-                            encodeGIF(frames, cropCanvas.width, cropCanvas.height);
-                        }
-                    }, intervalTime);
-
-                } catch (err) {
-                    console.error("Error capturing screen:", err);
-                    alert("Export canceled. You must grant permission to record the tab in order to generate the GIF.");
-                    exportBtn.textContent = 'EXPORT GIF';
-                    exportBtn.style.backgroundColor = 'var(--color-button-purple)';
-                    exportBtn.disabled = false;
-                }
-            });
-
-            function encodeGIF(framesArray, width, height) {
-                exportBtn.textContent = 'ENCODING GIF...';
-                exportBtn.style.backgroundColor = 'var(--color-button-orange)';
-
-                let finalWidth = width;
-                let finalHeight = height;
-                if(width > 600) {
-                    finalWidth = 600;
-                    finalHeight = (height * 600) / width;
-                }
-
-                gifshot.createGIF({
-                    images: framesArray,
-                    gifWidth: finalWidth,
-                    gifHeight: finalHeight,
-                    interval: 1 / 15,
-                    numWorkers: 2,
-                }, function(obj) {
-                    if(!obj.error) {
-                        const image = obj.image; 
-                        const a = document.createElement('a');
-                        a.href = image;
-                        a.download = 'TypeType_Kinetic.gif';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                    } else {
-                        alert('An error occurred while generating the GIF.');
-                    }
-                    
-                    exportBtn.textContent = 'EXPORT GIF';
-                    exportBtn.style.backgroundColor = 'var(--color-button-purple)';
-                    exportBtn.disabled = false;
-                });
-            }
-        } catch (e) {
-            console.error("Initialization error: ", e);
+        // Auto-redimensionar el Canvas para que coincida con la pantalla y no se vea borroso
+        function resizeCanvas() {
+            const rect = canvasArea.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            canvasWidth = rect.width;
+            canvasHeight = rect.height;
         }
+
+        const resizeObserver = new ResizeObserver(() => resizeCanvas());
+        resizeObserver.observe(canvasArea);
+
+        // UI Listeners
+        canvasArea.addEventListener('mouseenter', () => customCursor.style.display = 'block');
+        canvasArea.addEventListener('mouseleave', () => customCursor.style.display = 'none');
+        document.addEventListener('mousemove', (e) => {
+            if(customCursor.style.display === 'block') {
+                customCursor.style.left = (e.clientX - 5) + 'px';
+                customCursor.style.top = (e.clientY - 5) + 'px';
+            }
+        });
+
+        fontOptions.forEach(btn => {
+            btn.addEventListener('click', () => {
+                fontOptions.forEach(opt => opt.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        aspectButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                aspectButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                canvasArea.style.aspectRatio = btn.getAttribute('data-aspect');
+            });
+        });
+
+        document.getElementById('btn-dark').addEventListener('click', () => document.body.classList.add('dark-mode'));
+        document.getElementById('btn-light').addEventListener('click', () => document.body.classList.remove('dark-mode'));
+
+        // MOTOR GRÁFICO (Dibuja texto animado frame por frame)
+        function drawFrame() {
+            if (!isExporting) requestAnimationFrame(drawFrame);
+
+            // Si está exportando, forzamos el tiempo exacto del frame para lograr un loop perfecto
+            const currentTime = isExporting ? exportTime : performance.now();
+
+            ctx.fillStyle = bgColorPicker.value;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            const text = textInput.value;
+            const lines = text.split('\n').slice(0, 3);
+            const fontSize = parseInt(sizeSlider.value);
+            const tracking = parseInt(trackingSlider.value);
+            const lineHeight = parseInt(lineHeightSlider.value);
+            const fontFam = document.querySelector('.font-option.active').getAttribute('data-font');
+            const textColor = textColorPicker.value;
+
+            ctx.font = `bold ${fontSize}px ${fontFam}`;
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            const totalHeight = lines.length * fontSize + (lines.length - 1) * lineHeight;
+            let startY = (canvasHeight - totalHeight) / 2 + fontSize / 2;
+            let globalCharIndex = 0;
+
+            lines.forEach(line => {
+                let lineWidth = 0;
+                const charWidths = [];
+                for(let i=0; i<line.length; i++) {
+                    const cw = ctx.measureText(line[i]).width;
+                    charWidths.push(cw);
+                    lineWidth += cw;
+                }
+                lineWidth += Math.max(0, line.length - 1) * tracking;
+
+                let startX = (canvasWidth - lineWidth) / 2;
+
+                for(let i=0; i<line.length; i++) {
+                    const char = line[i];
+                    const cw = charWidths[i];
+
+                    // Matemáticas de la animación (Replica el CSS de 1.5s wave)
+                    const duration = 1500;
+                    let elapsed = currentTime - (globalCharIndex * 100); 
+                    elapsed = ((elapsed % duration) + duration) % duration; 
+                    let progress = elapsed / duration; 
+
+                    let intensity = progress < 0.5 ? progress * 2 : (1 - progress) * 2;
+                    let ease = -(Math.cos(Math.PI * intensity) - 1) / 2; 
+
+                    let scale = 1 + (ease * 0.15);
+                    let yOffset = ease * -5;
+
+                    if (char !== ' ') {
+                        ctx.save();
+                        ctx.translate(startX + cw/2, startY + yOffset);
+                        ctx.scale(scale, scale);
+                        ctx.fillText(char, 0, 0);
+                        ctx.restore();
+                    }
+
+                    startX += cw + tracking;
+                    globalCharIndex++;
+                }
+                startY += fontSize + lineHeight;
+            });
+        }
+
+        // EXPORTACIÓN AUTOMÁTICA
+        exportBtn.addEventListener('click', () => {
+            if (typeof gifshot === 'undefined') {
+                alert("Error: Librería de GIF no cargada."); return;
+            }
+
+            isExporting = true;
+            exportBtn.textContent = 'BUILDING GIF...';
+            exportBtn.style.backgroundColor = 'var(--color-button-orange)';
+            exportBtn.disabled = true;
+
+            const frames = [];
+            const fps = 20; // Animación muy fluida
+            const duration = 1500; // Loop exacto de 1.5 segundos
+            const totalFrames = (duration / 1000) * fps; // 30 fotos
+            const timeStep = duration / totalFrames;
+
+            // Preparamos un canvas temporal para reducir el tamaño del GIF y que procese rápido
+            let targetWidth = canvasWidth;
+            let targetHeight = canvasHeight;
+            if (targetWidth > 600) {
+                const ratio = 600 / targetWidth;
+                targetWidth = 600;
+                targetHeight = canvasHeight * ratio;
+            }
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = targetWidth;
+            tempCanvas.height = targetHeight;
+            const tCtx = tempCanvas.getContext('2d');
+
+            // Tomamos 30 fotos en milisegundos controlando el tiempo interno
+            for (let i = 0; i < totalFrames; i++) {
+                exportTime = i * timeStep;
+                drawFrame(); 
+                tCtx.clearRect(0, 0, targetWidth, targetHeight);
+                tCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
+                frames.push(tempCanvas.toDataURL('image/png'));
+            }
+
+            gifshot.createGIF({
+                images: frames,
+                gifWidth: targetWidth,
+                gifHeight: targetHeight,
+                interval: 1 / fps,
+                numWorkers: 2,
+            }, function(obj) {
+                if (!obj.error) {
+                    const a = document.createElement('a');
+                    a.href = obj.image;
+                    a.download = 'TypeType_Automated.gif';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                } else {
+                    alert('Hubo un error procesando el GIF.');
+                }
+                
+                isExporting = false;
+                exportBtn.textContent = 'EXPORT GIF';
+                exportBtn.style.backgroundColor = 'var(--color-button-purple)';
+                exportBtn.disabled = false;
+                drawFrame(); // Reanudar animación en vivo
+            });
+        });
+
+        // Iniciar la magia cuando las fuentes estén listas
+        document.fonts.ready.then(() => {
+            resizeCanvas();
+            drawFrame();
+        });
+
     </script>
 </body>
 </html>
