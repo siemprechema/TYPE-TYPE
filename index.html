@@ -29,12 +29,14 @@
             --color-button-purple: #9c27b0;
             --color-button-orange: #ff9800;
             --color-button-yellow: #ffeb3b;
+            --color-button-white: #ffffff;
+            --color-button-black: #000000;
 
             /* Tipografía y Espaciados */
             --font-ui: 'Inter', sans-serif;
             --font-canvas: 'Roboto Flex', sans-serif;
             --tracking-canvas: 0px; 
-            --line-spacing: 10px; /* Variable para el interlineado */
+            --line-spacing: 10px;
             
             /* Sombra retro 3D */
             --box-shadow-retro: 6px 6px 0px 0px var(--color-shadow);
@@ -121,6 +123,8 @@
         .retro-button.purple { background-color: var(--color-button-purple); }
         .retro-button.orange { background-color: var(--color-button-orange); }
         .retro-button.yellow { background-color: var(--color-button-yellow); }
+        .retro-button.white { background-color: var(--color-button-white); color: #000000; }
+        .retro-button.black { background-color: var(--color-button-black); color: #ffffff; }
 
         .control-group {
             border: 2px solid var(--color-outline);
@@ -289,12 +293,11 @@
             display: none;
         }
 
-        /* TEXTO CINÉTICO */
+        /* TEXTO CINÉTICO AUTOMÁTICO */
         .kinetic-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Eliminamos el 'gap' para controlarlo con el margin de cada línea y permitir valores negativos */
         }
 
         .kinetic-line {
@@ -306,23 +309,27 @@
             letter-spacing: var(--tracking-canvas); 
         }
 
-        /* Aplicamos el interlineado a partir de la segunda línea */
         .kinetic-line:not(:first-child) {
             margin-top: var(--line-spacing);
         }
 
-        .kinetic-line span {
-            display: inline-block;
-            font-weight: 200; 
-            transition: font-weight 0.4s ease-out, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.3s;
-            transform-origin: center center;
+        /* Keyframes para la ola infinita */
+        @keyframes autoKineticWave {
+            0%, 100% {
+                font-weight: 200;
+                transform: scale(1) translateY(0);
+            }
+            50% {
+                font-weight: 900;
+                transform: scale(1.15) translateY(-5px);
+            }
         }
 
-        .kinetic-line span:hover {
-            font-weight: 900; 
-            transform: scale(1.15) translateY(-5px);
-            color: var(--color-button-pink);
-            z-index: 2;
+        .kinetic-line span {
+            display: inline-block;
+            /* La animación es infinita y fluida */
+            animation: autoKineticWave 1.5s infinite ease-in-out;
+            transform-origin: center center;
         }
 
         .aspect-controls {
@@ -394,8 +401,8 @@
         </div>
 
         <div class="control-group mode-switch">
-            <button id="btn-light" class="retro-button yellow" style="width:50%;">LIGHT</button>
-            <button id="btn-dark" class="retro-button purple" style="width:50%;">DARK</button>
+            <button id="btn-light" class="retro-button white" style="width:50%;">LIGHT</button>
+            <button id="btn-dark" class="retro-button black" style="width:50%;">DARK</button>
         </div>
 
         <div class="control-group" style="text-align: center;">
@@ -413,13 +420,15 @@
                 <div class="window-control"></div>
                 <div class="window-control"></div>
             </div>
-            <div class="canvas-body" id="canvas-area" style="aspect-ratio: 4/3;">
+            <!-- Canvas actualizado a 3:4 por defecto -->
+            <div class="canvas-body" id="canvas-area" style="aspect-ratio: 3/4;">
                 <div class="kinetic-container" id="kinetic-container"></div>
             </div>
         </div>
 
         <div class="aspect-controls">
-            <button class="aspect-button active" data-aspect="4/3">4:3</button>
+            <!-- Botones de aspecto actualizados -->
+            <button class="aspect-button active" data-aspect="3/4">3:4</button>
             <button class="aspect-button" data-aspect="16/9">16:9</button>
         </div>
     </main>
@@ -429,7 +438,7 @@
         const kineticContainer = document.getElementById('kinetic-container');
         const sizeSlider = document.getElementById('size-slider');
         const trackingSlider = document.getElementById('tracking-slider');
-        const lineHeightSlider = document.getElementById('line-height-slider'); // Instanciado
+        const lineHeightSlider = document.getElementById('line-height-slider');
         const fontOptions = document.querySelectorAll('.font-option');
         const bgColorPicker = document.getElementById('bg-color-picker');
         const textColorPicker = document.getElementById('text-color-picker');
@@ -441,6 +450,9 @@
             kineticContainer.innerHTML = ''; 
             const lines = text.split('\n').slice(0, 3);
             
+            // Índice global para crear el efecto de ola continua en todo el párrafo
+            let globalCharIndex = 0; 
+
             lines.forEach(line => {
                 const lineDiv = document.createElement('div');
                 lineDiv.className = 'kinetic-line';
@@ -453,6 +465,11 @@
                     } else {
                         span.textContent = char;
                     }
+                    
+                    // Asignamos el delay dinámicamente para que corra de izquierda a derecha
+                    span.style.animationDelay = `${globalCharIndex * 0.1}s`;
+                    globalCharIndex++;
+
                     lineDiv.appendChild(span);
                 });
                 kineticContainer.appendChild(lineDiv);
@@ -483,7 +500,6 @@
             document.documentElement.style.setProperty('--tracking-canvas', `${e.target.value}px`);
         });
 
-        // NUEVO: Lógica del Interlineado Slider
         lineHeightSlider.addEventListener('input', (e) => {
             document.documentElement.style.setProperty('--line-spacing', `${e.target.value}px`);
         });
