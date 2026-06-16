@@ -141,15 +141,15 @@
     <aside class="sidebar">
         <div class="control-group">
             <label class="control-label">Type your word</label>
-            <textarea id="text-input" class="retro-input" rows="2" placeholder="Type here... Max 3 lines">ExPeriMent</textarea>
+            <textarea id="text-input" class="retro-input" rows="2" placeholder="Type here... Max 3 lines">UnWiSe</textarea>
         </div>
         <div class="control-group">
             <label class="control-label">Size</label>
-            <input type="range" id="size-slider" min="30" max="150" value="80" class="slider-control">
+            <input type="range" id="size-slider" min="30" max="150" value="100" class="slider-control">
         </div>
         <div class="control-group">
             <label class="control-label">Tracking</label>
-            <input type="range" id="tracking-slider" min="-10" max="50" value="0" class="slider-control">
+            <input type="range" id="tracking-slider" min="-10" max="50" value="5" class="slider-control">
         </div>
         <div class="control-group">
             <label class="control-label">Line Height</label>
@@ -166,8 +166,8 @@
         <div class="control-group">
             <label class="control-label">Color (Canvas / Text)</label>
             <div class="color-pickers">
-                <input type="color" id="bg-color-picker" value="#ffeb3b" class="color-input">
-                <input type="color" id="text-color-picker" value="#000000" class="color-input">
+                <input type="color" id="bg-color-picker" value="#e91e63" class="color-input">
+                <input type="color" id="text-color-picker" value="#ffffff" class="color-input">
             </div>
         </div>
         <div class="control-group mode-switch">
@@ -184,13 +184,13 @@
                 <div class="window-control"></div>
                 <div class="window-control"></div>
             </div>
-            <div class="canvas-body" id="canvas-area" style="aspect-ratio: 1/1;">
+            <div class="canvas-body" id="canvas-area" style="aspect-ratio: 16/9;">
                 <canvas id="main-canvas"></canvas>
             </div>
         </div>
         <div class="aspect-controls">
-            <button class="aspect-button active" data-aspect="1/1">1:1</button>
-            <button class="aspect-button" data-aspect="16/9">16:9</button>
+            <button class="aspect-button" data-aspect="1/1">1:1</button>
+            <button class="aspect-button active" data-aspect="16/9">16:9</button>
         </div>
     </main>
 
@@ -255,7 +255,7 @@
         document.getElementById('btn-dark').addEventListener('click', () => document.body.classList.add('dark-mode'));
         document.getElementById('btn-light').addEventListener('click', () => document.body.classList.remove('dark-mode'));
 
-        // MOTOR GRÁFICO ACTUALIZADO (Rápido y fluido)
+        // MOTOR GRÁFICO (Dinámico, Conciso y Estilo "Unwise")
         function drawFrame() {
             if (!isExporting) requestAnimationFrame(drawFrame);
 
@@ -280,7 +280,6 @@
             let startY = (canvasHeight - totalHeight) / 2 + fontSize / 2;
             let globalCharIndex = 0;
 
-            // DURACIÓN AJUSTADA: 2 segundos en lugar de 3 para mayor dinamismo
             const duration = 2000; 
 
             lines.forEach(line => {
@@ -301,24 +300,38 @@
                     const char = line[i];
                     const cw = charWidths[i];
 
-                    // DESFASE AJUSTADO: 120ms para una ola más fluida entre letras
-                    let elapsed = currentTime - (globalCharIndex * 120); 
+                    // DESFASE AUMENTADO: Genera un alto contraste entre letras contiguas
+                    let elapsed = currentTime - (globalCharIndex * 280); 
                     elapsed = ((elapsed % duration) + duration) % duration; 
                     let progress = elapsed / duration; 
 
-                    let pulse = (Math.sin((progress * Math.PI * 2) - (Math.PI / 2)) + 1) / 2;
+                    // ONDA "SNAPPY": Elevamos al cubo para que cambie agresivamente 
+                    // de un extremo a otro, matando el movimiento de "ola suave".
+                    let baseWave = Math.sin(progress * Math.PI * 2);
+                    let punchyWave = Math.pow(baseWave, 3); 
 
-                    let currentWeight = Math.floor(300 + (pulse * 500)); 
+                    // RANGO EXTREMO: De 100 (Ultra Light) a 900 (Black/Ultra)
+                    let pulse = (punchyWave + 1) / 2;
+                    let currentWeight = Math.floor(100 + (pulse * 800)); 
                     
-                    let scaleX = 1 + (pulse * 0.15); 
-                    let scaleY = 1 + (pulse * 0.05);
-                    let yOffset = pulse * -8; 
+                    // ITALIC DINÁMICO: Inclinación lateral brusca usando Skew
+                    let skewX = punchyWave * -0.35; 
+                    
+                    // ESTIRAMIENTO HORIZONTAL para darle más actitud al peso
+                    let scaleX = 1 + (punchyWave * 0.2); 
+                    let scaleY = 1 + (Math.abs(punchyWave) * 0.05);
 
                     if (char !== ' ') {
                         ctx.save();
                         ctx.font = `${currentWeight} ${fontSize}px ${fontFam}`;
-                        ctx.translate(startX + cw/2, startY + yOffset);
-                        ctx.scale(scaleX, scaleY);
+                        
+                        // Movemos el punto de origen al centro de la letra
+                        ctx.translate(startX + cw/2, startY);
+                        
+                        // Aplicamos escala y la simulación Italic al mismo tiempo
+                        // transform(scaleX, skewY, skewX, scaleY, translateX, translateY)
+                        ctx.transform(scaleX, 0, skewX, scaleY, 0, 0);
+                        
                         ctx.fillText(char, 0, 0);
                         ctx.restore();
                     }
@@ -330,7 +343,7 @@
             });
         }
 
-        // EXPORTACIÓN AUTOMÁTICA EN ALTA RESOLUCIÓN Y 30 FPS
+        // EXPORTACIÓN AUTOMÁTICA
         exportBtn.addEventListener('click', () => {
             if (typeof gifshot === 'undefined') {
                 alert("Error: Librería de GIF no cargada."); return;
@@ -342,8 +355,8 @@
             exportBtn.disabled = true;
 
             const frames = [];
-            const fps = 30; // Subimos a 30 cuadros por segundo para máxima fluidez
-            const duration = 2000; // Sincronizado con la animación de 2 segundos
+            const fps = 30; 
+            const duration = 2000; 
             const totalFrames = (duration / 1000) * fps; 
             const timeStep = duration / totalFrames;
 
@@ -368,12 +381,12 @@
                 if (!obj.error) {
                     const a = document.createElement('a');
                     a.href = obj.image;
-                    a.download = 'TypeType_Fluid.gif';
+                    a.download = 'TypeType_Punchy.gif';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                 } else {
-                    alert('Hubo un error procesando el GIF. La resolución nativa de tu pantalla podría ser demasiado grande para la memoria del navegador.');
+                    alert('Hubo un error procesando el GIF. La memoria del navegador puede estar llena.');
                 }
                 
                 isExporting = false;
@@ -384,7 +397,7 @@
             });
         });
 
-        // Iniciar la magia cuando las fuentes estén listas
+        // Iniciar al cargar fuentes
         document.fonts.ready.then(() => {
             resizeCanvas();
             drawFrame();
