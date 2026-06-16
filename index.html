@@ -30,10 +30,11 @@
             --color-button-orange: #ff9800;
             --color-button-yellow: #ffeb3b;
 
-            /* Tipografía y Tracking */
+            /* Tipografía y Espaciados */
             --font-ui: 'Inter', sans-serif;
             --font-canvas: 'Roboto Flex', sans-serif;
-            --tracking-canvas: 0px; /* Variable para controlar el espaciado de letras */
+            --tracking-canvas: 0px; 
+            --line-spacing: 10px; /* Variable para el interlineado */
             
             /* Sombra retro 3D */
             --box-shadow-retro: 6px 6px 0px 0px var(--color-shadow);
@@ -103,7 +104,7 @@
             padding: 10px 15px;
             font-family: var(--font-ui);
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 900;
             text-transform: uppercase;
             text-align: center;
             color: var(--color-outline);
@@ -137,7 +138,6 @@
             display: block;
         }
 
-        /* Área de Texto Real */
         .retro-input {
             width: 100%;
             padding: 10px;
@@ -152,7 +152,6 @@
         }
         .retro-input:focus { outline: none; border-color: var(--color-button-pink); }
 
-        /* Sliders y Selectores */
         .slider-control {
             width: 100%;
             height: 10px;
@@ -194,7 +193,6 @@
             color: #fff;
         }
 
-        /* Color Pickers Nativos */
         .color-pickers { display: flex; gap: 10px; }
         .color-input {
             -webkit-appearance: none;
@@ -291,12 +289,12 @@
             display: none;
         }
 
-        /* TEXTO CINÉTICO - CON FUENTES VARIABLES */
+        /* TEXTO CINÉTICO */
         .kinetic-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            /* Eliminamos el 'gap' para controlarlo con el margin de cada línea y permitir valores negativos */
         }
 
         .kinetic-line {
@@ -305,24 +303,23 @@
             font-family: var(--font-canvas);
             font-size: 80px; 
             color: var(--color-text-canvas);
-            /* Tracking conectado a la variable */
             letter-spacing: var(--tracking-canvas); 
-            /* Se ha eliminado el text-transform: uppercase; para respetar tu escritura */
+        }
+
+        /* Aplicamos el interlineado a partir de la segunda línea */
+        .kinetic-line:not(:first-child) {
+            margin-top: var(--line-spacing);
         }
 
         .kinetic-line span {
             display: inline-block;
-            /* Inicia con el peso más ligero (Light/Thin) */
             font-weight: 200; 
-            /* Transición suave para el font-weight y escala */
             transition: font-weight 0.4s ease-out, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.3s;
             transform-origin: center center;
         }
 
         .kinetic-line span:hover {
-            /* Pasa al peso máximo (Ultra Black) */
             font-weight: 900; 
-            /* Un ligero "pop" visual para acompañar el grosor */
             transform: scale(1.15) translateY(-5px);
             color: var(--color-button-pink);
             z-index: 2;
@@ -368,8 +365,13 @@
         </div>
 
         <div class="control-group">
-            <label class="control-label">Tracking (Espaciado)</label>
+            <label class="control-label">Tracking (Letras)</label>
             <input type="range" id="tracking-slider" min="-10" max="50" value="0" class="slider-control">
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Interlineado (Renglones)</label>
+            <input type="range" id="line-height-slider" min="-50" max="80" value="10" class="slider-control">
         </div>
 
         <div class="control-group">
@@ -392,8 +394,8 @@
         </div>
 
         <div class="control-group mode-switch">
-            <button id="btn-light" class="retro-button yellow" style="width:50%;">☀️</button>
-            <button id="btn-dark" class="retro-button purple" style="width:50%;">🌙</button>
+            <button id="btn-light" class="retro-button yellow" style="width:50%;">LIGHT</button>
+            <button id="btn-dark" class="retro-button purple" style="width:50%;">DARK</button>
         </div>
 
         <div class="control-group" style="text-align: center;">
@@ -417,9 +419,8 @@
         </div>
 
         <div class="aspect-controls">
-            <button class="aspect-button active" data-aspect="4/3">4:3 (Pinterest)</button>
-            <button class="aspect-button" data-aspect="9/16">9:16 (Reels/TikTok)</button>
-            <button class="aspect-button" data-aspect="16/9">16:9 (Desktop)</button>
+            <button class="aspect-button active" data-aspect="4/3">4:3</button>
+            <button class="aspect-button" data-aspect="16/9">16:9</button>
         </div>
     </main>
 
@@ -427,7 +428,8 @@
         const textInput = document.getElementById('text-input');
         const kineticContainer = document.getElementById('kinetic-container');
         const sizeSlider = document.getElementById('size-slider');
-        const trackingSlider = document.getElementById('tracking-slider'); // Instanciado
+        const trackingSlider = document.getElementById('tracking-slider');
+        const lineHeightSlider = document.getElementById('line-height-slider'); // Instanciado
         const fontOptions = document.querySelectorAll('.font-option');
         const bgColorPicker = document.getElementById('bg-color-picker');
         const textColorPicker = document.getElementById('text-color-picker');
@@ -477,9 +479,13 @@
             lines.forEach(line => line.style.fontSize = `${e.target.value}px`);
         });
 
-        // NUEVO: Lógica del Tracking Slider
         trackingSlider.addEventListener('input', (e) => {
             document.documentElement.style.setProperty('--tracking-canvas', `${e.target.value}px`);
+        });
+
+        // NUEVO: Lógica del Interlineado Slider
+        lineHeightSlider.addEventListener('input', (e) => {
+            document.documentElement.style.setProperty('--line-spacing', `${e.target.value}px`);
         });
 
         fontOptions.forEach(btn => {
