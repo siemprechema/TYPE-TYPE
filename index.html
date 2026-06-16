@@ -6,7 +6,7 @@
     <title>TYPE TYPE - Kinetic Typography Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;900&family=Bebas+Neue&family=Righteous&family=Abril+Fatface&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Josefin+Sans:wght@100..700&family=Montserrat:wght@100..900&family=Outfit:wght@100..900&family=Roboto+Flex:wght@100..1000&display=swap" rel="stylesheet">
     <style>
         /* CSS RESET & VARIABLES */
         * {
@@ -30,9 +30,10 @@
             --color-button-orange: #ff9800;
             --color-button-yellow: #ffeb3b;
 
-            /* Tipografías */
+            /* Tipografía y Tracking */
             --font-ui: 'Inter', sans-serif;
-            --font-canvas: 'Anton', sans-serif;
+            --font-canvas: 'Roboto Flex', sans-serif;
+            --tracking-canvas: 0px; /* Variable para controlar el espaciado de letras */
             
             /* Sombra retro 3D */
             --box-shadow-retro: 6px 6px 0px 0px var(--color-shadow);
@@ -183,8 +184,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 900;
             font-size: 18px;
             cursor: pointer;
+            font-family: var(--font-ui);
         }
         .font-option.active {
             background: var(--color-button-pink);
@@ -262,10 +265,9 @@
         .window-control:nth-child(2) { background-color: #ffbd2e; }
         .window-control:nth-child(3) { background-color: #27c93f; }
 
-        /* EL BLINDAJE DEL CANVAS: Añadido width 100% y min-height */
         .canvas-body {
             width: 100%;
-            min-height: 400px; /* Respaldo para navegadores que fallan con aspect-ratio */
+            min-height: 400px; 
             background-color: var(--bg-canvas);
             display: flex;
             align-items: center;
@@ -289,7 +291,7 @@
             display: none;
         }
 
-        /* TEXTO CINÉTICO */
+        /* TEXTO CINÉTICO - CON FUENTES VARIABLES */
         .kinetic-container {
             display: flex;
             flex-direction: column;
@@ -303,18 +305,27 @@
             font-family: var(--font-canvas);
             font-size: 80px; 
             color: var(--color-text-canvas);
-            text-transform: uppercase;
+            /* Tracking conectado a la variable */
+            letter-spacing: var(--tracking-canvas); 
+            /* Se ha eliminado el text-transform: uppercase; para respetar tu escritura */
         }
 
         .kinetic-line span {
             display: inline-block;
-            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.2s;
-            transform-origin: bottom center;
+            /* Inicia con el peso más ligero (Light/Thin) */
+            font-weight: 200; 
+            /* Transición suave para el font-weight y escala */
+            transition: font-weight 0.4s ease-out, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.3s;
+            transform-origin: center center;
         }
 
         .kinetic-line span:hover {
-            transform: translateY(-20px) scaleY(1.3) scaleX(1.1);
+            /* Pasa al peso máximo (Ultra Black) */
+            font-weight: 900; 
+            /* Un ligero "pop" visual para acompañar el grosor */
+            transform: scale(1.15) translateY(-5px);
             color: var(--color-button-pink);
+            z-index: 2;
         }
 
         .aspect-controls {
@@ -348,7 +359,7 @@
     <aside class="sidebar">
         <div class="control-group">
             <label class="control-label">Teclea tu palabra</label>
-            <textarea id="text-input" class="retro-input" rows="2" placeholder="Escribe aquí... Max 3 líneas">EXPERIMENTO</textarea>
+            <textarea id="text-input" class="retro-input" rows="2" placeholder="Escribe aquí... Max 3 líneas">ExPeriMento</textarea>
         </div>
 
         <div class="control-group">
@@ -357,13 +368,18 @@
         </div>
 
         <div class="control-group">
-            <label class="control-label">Tipografía</label>
+            <label class="control-label">Tracking (Espaciado)</label>
+            <input type="range" id="tracking-slider" min="-10" max="50" value="0" class="slider-control">
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Tipografía (Variables)</label>
             <div class="font-selector">
-                <div class="font-option active" style="font-family: 'Anton';" data-font="'Anton'">A</div>
-                <div class="font-option" style="font-family: 'Bebas Neue';" data-font="'Bebas Neue'">B</div>
-                <div class="font-option" style="font-family: 'Inter';" data-font="'Inter'">I</div>
-                <div class="font-option" style="font-family: 'Righteous';" data-font="'Righteous'">R</div>
-                <div class="font-option" style="font-family: 'Abril Fatface';" data-font="'Abril Fatface'">F</div>
+                <div class="font-option active" style="font-family: 'Roboto Flex';" title="Roboto Flex" data-font="'Roboto Flex'">R</div>
+                <div class="font-option" style="font-family: 'Montserrat';" title="Montserrat" data-font="'Montserrat'">M</div>
+                <div class="font-option" style="font-family: 'Outfit';" title="Outfit" data-font="'Outfit'">O</div>
+                <div class="font-option" style="font-family: 'Inter';" title="Inter" data-font="'Inter'">I</div>
+                <div class="font-option" style="font-family: 'Josefin Sans';" title="Josefin Sans" data-font="'Josefin Sans'">J</div>
             </div>
         </div>
 
@@ -378,14 +394,6 @@
         <div class="control-group mode-switch">
             <button id="btn-light" class="retro-button yellow" style="width:50%;">☀️</button>
             <button id="btn-dark" class="retro-button purple" style="width:50%;">🌙</button>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label">Efectos (Próximamente)</label>
-            <div style="display: flex; gap: 5px;">
-                <button class="retro-button orange" style="width:50%;">💧</button>
-                <button class="retro-button orange" style="width:50%;">🖌️</button>
-            </div>
         </div>
 
         <div class="control-group" style="text-align: center;">
@@ -419,6 +427,7 @@
         const textInput = document.getElementById('text-input');
         const kineticContainer = document.getElementById('kinetic-container');
         const sizeSlider = document.getElementById('size-slider');
+        const trackingSlider = document.getElementById('tracking-slider'); // Instanciado
         const fontOptions = document.querySelectorAll('.font-option');
         const bgColorPicker = document.getElementById('bg-color-picker');
         const textColorPicker = document.getElementById('text-color-picker');
@@ -433,7 +442,6 @@
             lines.forEach(line => {
                 const lineDiv = document.createElement('div');
                 lineDiv.className = 'kinetic-line';
-                // Respetar tamaño del slider al tipear nuevas letras
                 lineDiv.style.fontSize = `${sizeSlider.value}px`;
                 
                 line.split('').forEach(char => {
@@ -467,6 +475,11 @@
         sizeSlider.addEventListener('input', (e) => {
             const lines = document.querySelectorAll('.kinetic-line');
             lines.forEach(line => line.style.fontSize = `${e.target.value}px`);
+        });
+
+        // NUEVO: Lógica del Tracking Slider
+        trackingSlider.addEventListener('input', (e) => {
+            document.documentElement.style.setProperty('--tracking-canvas', `${e.target.value}px`);
         });
 
         fontOptions.forEach(btn => {
