@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TYPE TYPE - Kinetic Typography Lab</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..800&family=Inter:wght@100..900&family=Pixelify+Sans:wght@400..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -254,7 +255,7 @@
         document.getElementById('btn-dark').addEventListener('click', () => document.body.classList.add('dark-mode'));
         document.getElementById('btn-light').addEventListener('click', () => document.body.classList.remove('dark-mode'));
 
-        // MOTOR GRÁFICO ACTUALIZADO (True Kinetic Type Variable)
+        // MOTOR GRÁFICO ACTUALIZADO (Rápido y fluido)
         function drawFrame() {
             if (!isExporting) requestAnimationFrame(drawFrame);
 
@@ -279,14 +280,13 @@
             let startY = (canvasHeight - totalHeight) / 2 + fontSize / 2;
             let globalCharIndex = 0;
 
-            // ANIMACIÓN MÁS LENTA (3 segundos en lugar de 1.5s)
-            const duration = 3000; 
+            // DURACIÓN AJUSTADA: 2 segundos en lugar de 3 para mayor dinamismo
+            const duration = 2000; 
 
             lines.forEach(line => {
                 let lineWidth = 0;
                 const charWidths = [];
                 
-                // Medimos la línea con un peso estándar para mantener el tracking estable
                 ctx.font = `500 ${fontSize}px ${fontFam}`; 
                 for(let i=0; i<line.length; i++) {
                     const cw = ctx.measureText(line[i]).width;
@@ -301,25 +301,21 @@
                     const char = line[i];
                     const cw = charWidths[i];
 
-                    // Desfase secuencial suave
-                    let elapsed = currentTime - (globalCharIndex * 180); 
+                    // DESFASE AJUSTADO: 120ms para una ola más fluida entre letras
+                    let elapsed = currentTime - (globalCharIndex * 120); 
                     elapsed = ((elapsed % duration) + duration) % duration; 
                     let progress = elapsed / duration; 
 
-                    // Onda senoidal para un movimiento fluido de ida y vuelta (0 -> 1 -> 0)
                     let pulse = (Math.sin((progress * Math.PI * 2) - (Math.PI / 2)) + 1) / 2;
 
-                    // EL NÚCLEO KINETIC: Interpolar el Font-Weight dinámicamente de 300 a 800
                     let currentWeight = Math.floor(300 + (pulse * 500)); 
                     
-                    // Escala tipográfica sutil acompañando al peso
                     let scaleX = 1 + (pulse * 0.15); 
                     let scaleY = 1 + (pulse * 0.05);
-                    let yOffset = pulse * -8; // Salto ligero
+                    let yOffset = pulse * -8; 
 
                     if (char !== ' ') {
                         ctx.save();
-                        // Asignamos el peso exacto para el frame actual
                         ctx.font = `${currentWeight} ${fontSize}px ${fontFam}`;
                         ctx.translate(startX + cw/2, startY + yOffset);
                         ctx.scale(scaleX, scaleY);
@@ -334,7 +330,7 @@
             });
         }
 
-        // EXPORTACIÓN AUTOMÁTICA EN ALTA RESOLUCIÓN
+        // EXPORTACIÓN AUTOMÁTICA EN ALTA RESOLUCIÓN Y 30 FPS
         exportBtn.addEventListener('click', () => {
             if (typeof gifshot === 'undefined') {
                 alert("Error: Librería de GIF no cargada."); return;
@@ -346,15 +342,15 @@
             exportBtn.disabled = true;
 
             const frames = [];
-            const fps = 20; 
-            const duration = 3000; // Actualizado a 3 segundos para que el loop GIF sea perfecto
+            const fps = 30; // Subimos a 30 cuadros por segundo para máxima fluidez
+            const duration = 2000; // Sincronizado con la animación de 2 segundos
             const totalFrames = (duration / 1000) * fps; 
             const timeStep = duration / totalFrames;
 
             const targetWidth = canvas.width;
             const targetHeight = canvas.height;
 
-            console.log(`Procesando GIF de ${targetWidth}x${targetHeight} píxeles... Esto puede tardar.`);
+            console.log(`Procesando GIF de ${targetWidth}x${targetHeight} a ${fps}fps... Esto puede tardar.`);
 
             for (let i = 0; i < totalFrames; i++) {
                 exportTime = i * timeStep;
@@ -367,12 +363,12 @@
                 gifWidth: targetWidth,
                 gifHeight: targetHeight,
                 interval: 1 / fps,
-                numWorkers: 4, // 4 procesadores en paralelo
+                numWorkers: 4, 
             }, function(obj) {
                 if (!obj.error) {
                     const a = document.createElement('a');
                     a.href = obj.image;
-                    a.download = 'TypeType_Kinetic.gif';
+                    a.download = 'TypeType_Fluid.gif';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
