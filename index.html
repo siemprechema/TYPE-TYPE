@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TYPE TYPE - Kinetic Typography Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..800&family=Inter:wght@100..900&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..800&family=Inter:wght@100..900&family=Pixelify+Sans:wght@400..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <style>
         /* CSS RESET & VARIABLES */
         * {
@@ -16,7 +16,7 @@
         }
 
         :root {
-            /* Colores Base */
+            /* Base Colors */
             --bg-main: #f0f0f0;
             --bg-canvas: #ffeb3b;
             --bg-sidebar: #4caf50;
@@ -24,7 +24,7 @@
             --color-outline: #000000;
             --color-shadow: #000000;
             
-            /* Colores Botones */
+            /* Button Colors */
             --color-button-pink: #e91e63;
             --color-button-purple: #9c27b0;
             --color-button-orange: #ff9800;
@@ -32,13 +32,13 @@
             --color-button-white: #ffffff;
             --color-button-black: #000000;
 
-            /* Tipografía y Espaciados */
-            --font-ui: 'Inter', sans-serif;
-            --font-canvas: 'Inter', sans-serif; /* Iniciamos con Sans Serif */
+            /* Typography and Spacing */
+            --font-ui: 'Space Mono', monospace; /* Updated to Space Mono */
+            --font-canvas: 'Inter', sans-serif;
             --tracking-canvas: 0px; 
             --line-spacing: 10px;
             
-            /* Sombra retro 3D */
+            /* Retro 3D Shadow */
             --box-shadow-retro: 6px 6px 0px 0px var(--color-shadow);
             --box-shadow-retro-small: 3px 3px 0px 0px var(--color-shadow);
         }
@@ -79,13 +79,13 @@
 
         .logo {
             font-size: 26px;
-            font-weight: 900;
+            font-weight: 700; /* Space Mono supports up to 700 */
             text-transform: uppercase;
             color: var(--color-outline);
             letter-spacing: 2px;
         }
 
-        /* SIDEBAR (Herramientas) */
+        /* SIDEBAR (Tools) */
         .sidebar {
             grid-column: 1 / 2;
             grid-row: 2 / 3;
@@ -106,7 +106,7 @@
             padding: 10px 15px;
             font-family: var(--font-ui);
             font-size: 14px;
-            font-weight: 900;
+            font-weight: 700;
             text-transform: uppercase;
             text-align: center;
             color: var(--color-outline);
@@ -136,7 +136,7 @@
 
         .control-label {
             font-size: 12px;
-            font-weight: 900;
+            font-weight: 700;
             text-transform: uppercase;
             margin-bottom: 8px;
             display: block;
@@ -179,7 +179,7 @@
             flex-wrap: wrap;
         }
         .font-option {
-            flex-grow: 1; /* Para que ocupen todo el ancho equitativamente */
+            flex-grow: 1;
             height: 35px;
             background: #fff;
             color: #000;
@@ -190,6 +190,7 @@
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
+            font-family: var(--font-ui);
         }
         .font-option.active {
             background: var(--color-button-pink);
@@ -243,8 +244,8 @@
             border: 4px solid var(--color-outline);
             box-shadow: var(--box-shadow-retro);
             width: 100%;
-            max-width: 900px; /* Ancho máximo para que no se desborde */
-            max-height: 80vh; /* Alto máximo para mantenerlo en pantalla */
+            max-width: 900px;
+            max-height: 80vh;
             display: flex;
             flex-direction: column;
         }
@@ -280,7 +281,7 @@
             position: relative;
         }
 
-        /* CURSOR PERSONALIZADO */
+        /* CUSTOM CURSOR */
         #custom-cursor {
             position: fixed;
             width: 32px;
@@ -293,7 +294,7 @@
             display: none;
         }
 
-        /* TEXTO CINÉTICO AUTOMÁTICO */
+        /* AUTO KINETIC TEXT */
         .kinetic-container {
             display: flex;
             flex-direction: column;
@@ -313,8 +314,6 @@
             margin-top: var(--line-spacing);
         }
 
-        /* Animación adaptada a un rango seguro de peso (400 a 700) para que 
-           todas las 3 tipografías funcionen perfectamente sin romperse */
         @keyframes autoKineticWave {
             0%, 100% {
                 font-weight: 400;
@@ -345,6 +344,7 @@
             background: #fff;
             cursor: pointer;
             box-shadow: 2px 2px 0px var(--color-shadow);
+            font-family: var(--font-ui);
         }
         .aspect-button.active { background-color: var(--color-button-yellow); }
         body.dark-mode .aspect-button { background-color: #333; color: #fff; border-color:#fff; }
@@ -362,27 +362,27 @@
 
     <aside class="sidebar">
         <div class="control-group">
-            <label class="control-label">Teclea tu palabra</label>
-            <textarea id="text-input" class="retro-input" rows="2" placeholder="Escribe aquí... Max 3 líneas">ExPeriMento</textarea>
+            <label class="control-label">Type your word</label>
+            <textarea id="text-input" class="retro-input" rows="2" placeholder="Type here... Max 3 lines">ExPeriMent</textarea>
         </div>
 
         <div class="control-group">
-            <label class="control-label">Tamaño</label>
+            <label class="control-label">Size</label>
             <input type="range" id="size-slider" min="30" max="150" value="80" class="slider-control">
         </div>
 
         <div class="control-group">
-            <label class="control-label">Tracking (Letras)</label>
+            <label class="control-label">Tracking</label>
             <input type="range" id="tracking-slider" min="-10" max="50" value="0" class="slider-control">
         </div>
 
         <div class="control-group">
-            <label class="control-label">Interlineado (Renglones)</label>
+            <label class="control-label">Line Height</label>
             <input type="range" id="line-height-slider" min="-50" max="80" value="10" class="slider-control">
         </div>
 
         <div class="control-group">
-            <label class="control-label">Tipografía</label>
+            <label class="control-label">Typeface</label>
             <div class="font-selector">
                 <div class="font-option active" style="font-family: 'Inter', sans-serif;" title="Sans Serif" data-font="'Inter', sans-serif">SANS</div>
                 <div class="font-option" style="font-family: 'EB Garamond', serif;" title="Serif" data-font="'EB Garamond', serif">SERIF</div>
@@ -391,10 +391,10 @@
         </div>
 
         <div class="control-group">
-            <label class="control-label">Color (Fondo / Texto)</label>
+            <label class="control-label">Color (Canvas / Text)</label>
             <div class="color-pickers">
-                <input type="color" id="bg-color-picker" value="#ffeb3b" class="color-input" title="Fondo del Canvas">
-                <input type="color" id="text-color-picker" value="#000000" class="color-input" title="Color del Texto">
+                <input type="color" id="bg-color-picker" value="#ffeb3b" class="color-input" title="Canvas Background">
+                <input type="color" id="text-color-picker" value="#000000" class="color-input" title="Text Color">
             </div>
         </div>
 
@@ -404,11 +404,11 @@
         </div>
 
         <div class="control-group" style="text-align: center;">
-            <label class="control-label">Grabar 15s</label>
+            <label class="control-label">Record 15s</label>
             <div class="record-button" id="record-btn"></div>
         </div>
 
-        <button class="retro-button purple">Exportar MP4</button>
+        <button class="retro-button purple">Export MP4</button>
     </aside>
 
     <main class="main-content">
