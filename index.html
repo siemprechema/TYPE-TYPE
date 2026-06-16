@@ -96,7 +96,6 @@
             z-index: 5;
         }
 
-        /* Botones Generales */
         .retro-button {
             display: block;
             width: 100%;
@@ -121,7 +120,6 @@
         .retro-button.orange { background-color: var(--color-button-orange); }
         .retro-button.yellow { background-color: var(--color-button-yellow); }
 
-        /* Controles y Labels */
         .control-group {
             border: 2px solid var(--color-outline);
             padding: 10px;
@@ -147,7 +145,7 @@
             font-size: 16px;
             border: 3px solid var(--color-outline);
             box-shadow: inset 2px 2px 0px rgba(0,0,0,0.1);
-            resize: none; /* Evita que el usuario rompa el layout */
+            resize: none;
             background-color: #fff;
             color: #000;
         }
@@ -193,7 +191,7 @@
             color: #fff;
         }
 
-        /* Color Pickers Nativos integrados al diseño retro */
+        /* Color Pickers Nativos */
         .color-pickers { display: flex; gap: 10px; }
         .color-input {
             -webkit-appearance: none;
@@ -264,33 +262,34 @@
         .window-control:nth-child(2) { background-color: #ffbd2e; }
         .window-control:nth-child(3) { background-color: #27c93f; }
 
+        /* EL BLINDAJE DEL CANVAS: Añadido width 100% y min-height */
         .canvas-body {
+            width: 100%;
+            min-height: 400px; /* Respaldo para navegadores que fallan con aspect-ratio */
             background-color: var(--bg-canvas);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: aspect-ratio 0.3s ease, background-color 0.3s ease;
             overflow: hidden;
-            /* Aquí ocultamos el cursor normal SOLO en el lienzo */
             cursor: none; 
             position: relative;
         }
 
-        /* CURSOR PERSONALIZADO (Solo visible en el canvas) */
+        /* CURSOR PERSONALIZADO */
         #custom-cursor {
             position: fixed;
             width: 32px;
             height: 32px;
-            /* SVG codificado para evitar errores en navegadores */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffeb3b' stroke='%23000000' stroke-width='2'%3E%3Cpath d='M4 4l8 20 4-8 8-4-20-8z'/%3E%3C/svg%3E");
             background-size: contain;
             background-repeat: no-repeat;
-            pointer-events: none; /* No interfiere con clics */
+            pointer-events: none;
             z-index: 9999;
-            display: none; /* Oculto por defecto */
+            display: none;
         }
 
-        /* TEXTO CINÉTICO (El núcleo de la interactividad) */
+        /* TEXTO CINÉTICO */
         .kinetic-container {
             display: flex;
             flex-direction: column;
@@ -302,12 +301,11 @@
             display: flex;
             justify-content: center;
             font-family: var(--font-canvas);
-            font-size: 80px; /* Controlado por JS */
+            font-size: 80px; 
             color: var(--color-text-canvas);
             text-transform: uppercase;
         }
 
-        /* Animación letra por letra al pasar el ratón */
         .kinetic-line span {
             display: inline-block;
             transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.2s;
@@ -316,7 +314,7 @@
 
         .kinetic-line span:hover {
             transform: translateY(-20px) scaleY(1.3) scaleX(1.1);
-            color: var(--color-button-pink); /* Destello visual */
+            color: var(--color-button-pink);
         }
 
         .aspect-controls {
@@ -348,7 +346,8 @@
     </header>
 
     <aside class="sidebar">
-        <div class="control-group" style="padding:0; border:none; background:transparent;">
+        <div class="control-group">
+            <label class="control-label">Teclea tu palabra</label>
             <textarea id="text-input" class="retro-input" rows="2" placeholder="Escribe aquí... Max 3 líneas">EXPERIMENTO</textarea>
         </div>
 
@@ -372,4 +371,134 @@
             <label class="control-label">Color (Fondo / Texto)</label>
             <div class="color-pickers">
                 <input type="color" id="bg-color-picker" value="#ffeb3b" class="color-input" title="Fondo del Canvas">
-                <input type="color" id="text-color-picker" value="#000000" class="color-input" title="Color
+                <input type="color" id="text-color-picker" value="#000000" class="color-input" title="Color del Texto">
+            </div>
+        </div>
+
+        <div class="control-group mode-switch">
+            <button id="btn-light" class="retro-button yellow" style="width:50%;">☀️</button>
+            <button id="btn-dark" class="retro-button purple" style="width:50%;">🌙</button>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Efectos (Próximamente)</label>
+            <div style="display: flex; gap: 5px;">
+                <button class="retro-button orange" style="width:50%;">💧</button>
+                <button class="retro-button orange" style="width:50%;">🖌️</button>
+            </div>
+        </div>
+
+        <div class="control-group" style="text-align: center;">
+            <label class="control-label">Grabar 15s</label>
+            <div class="record-button" id="record-btn"></div>
+        </div>
+
+        <button class="retro-button purple">Exportar MP4</button>
+    </aside>
+
+    <main class="main-content">
+        <div class="canvas-window">
+            <div class="canvas-header">
+                <div class="window-control"></div>
+                <div class="window-control"></div>
+                <div class="window-control"></div>
+            </div>
+            <div class="canvas-body" id="canvas-area" style="aspect-ratio: 4/3;">
+                <div class="kinetic-container" id="kinetic-container"></div>
+            </div>
+        </div>
+
+        <div class="aspect-controls">
+            <button class="aspect-button active" data-aspect="4/3">4:3 (Pinterest)</button>
+            <button class="aspect-button" data-aspect="9/16">9:16 (Reels/TikTok)</button>
+            <button class="aspect-button" data-aspect="16/9">16:9 (Desktop)</button>
+        </div>
+    </main>
+
+    <script>
+        const textInput = document.getElementById('text-input');
+        const kineticContainer = document.getElementById('kinetic-container');
+        const sizeSlider = document.getElementById('size-slider');
+        const fontOptions = document.querySelectorAll('.font-option');
+        const bgColorPicker = document.getElementById('bg-color-picker');
+        const textColorPicker = document.getElementById('text-color-picker');
+        const aspectButtons = document.querySelectorAll('.aspect-button');
+        const canvasArea = document.getElementById('canvas-area');
+        const customCursor = document.getElementById('custom-cursor');
+        
+        function renderKineticText(text) {
+            kineticContainer.innerHTML = ''; 
+            const lines = text.split('\n').slice(0, 3);
+            
+            lines.forEach(line => {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'kinetic-line';
+                // Respetar tamaño del slider al tipear nuevas letras
+                lineDiv.style.fontSize = `${sizeSlider.value}px`;
+                
+                line.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    if(char === ' ') {
+                        span.innerHTML = '&nbsp;'; 
+                    } else {
+                        span.textContent = char;
+                    }
+                    lineDiv.appendChild(span);
+                });
+                kineticContainer.appendChild(lineDiv);
+            });
+        }
+
+        renderKineticText(textInput.value);
+        textInput.addEventListener('input', (e) => {
+            renderKineticText(e.target.value);
+        });
+
+        canvasArea.addEventListener('mouseenter', () => customCursor.style.display = 'block');
+        canvasArea.addEventListener('mouseleave', () => customCursor.style.display = 'none');
+        
+        document.addEventListener('mousemove', (e) => {
+            if(customCursor.style.display === 'block') {
+                customCursor.style.left = (e.clientX - 5) + 'px';
+                customCursor.style.top = (e.clientY - 5) + 'px';
+            }
+        });
+
+        sizeSlider.addEventListener('input', (e) => {
+            const lines = document.querySelectorAll('.kinetic-line');
+            lines.forEach(line => line.style.fontSize = `${e.target.value}px`);
+        });
+
+        fontOptions.forEach(btn => {
+            btn.addEventListener('click', () => {
+                fontOptions.forEach(opt => opt.classList.remove('active'));
+                btn.classList.add('active');
+                const fontName = btn.getAttribute('data-font');
+                document.documentElement.style.setProperty('--font-canvas', fontName);
+            });
+        });
+
+        bgColorPicker.addEventListener('input', (e) => {
+            document.documentElement.style.setProperty('--bg-canvas', e.target.value);
+        });
+        textColorPicker.addEventListener('input', (e) => {
+            document.documentElement.style.setProperty('--color-text-canvas', e.target.value);
+        });
+
+        aspectButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                aspectButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                canvasArea.style.aspectRatio = btn.getAttribute('data-aspect');
+            });
+        });
+
+        document.getElementById('btn-dark').addEventListener('click', () => document.body.classList.add('dark-mode'));
+        document.getElementById('btn-light').addEventListener('click', () => document.body.classList.remove('dark-mode'));
+
+        document.getElementById('record-btn').addEventListener('click', function() {
+            this.classList.toggle('recording');
+        });
+    </script>
+</body>
+</html>
