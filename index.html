@@ -117,7 +117,6 @@
 
         .canvas-body { width: 100%; min-height: 300px; display: flex; align-items: center; justify-content: center; transition: aspect-ratio 0.3s ease; overflow: hidden; cursor: none; position: relative; }
         
-        /* THE NATIVE CANVAS */
         #main-canvas { width: 100%; height: 100%; display: block; }
 
         #custom-cursor { position: fixed; width: 32px; height: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffeb3b' stroke='%23000000' stroke-width='2'%3E%3Cpath d='M4 4l8 20 4-8 8-4-20-8z'/%3E%3C/svg%3E"); background-size: contain; background-repeat: no-repeat; pointer-events: none; z-index: 9999; display: none; }
@@ -215,7 +214,6 @@
         let isExporting = false;
         let exportTime = 0;
 
-        // Auto-redimensionar el Canvas para que coincida con la pantalla y no se vea borroso
         function resizeCanvas() {
             const rect = canvasArea.getBoundingClientRect();
             const dpr = window.devicePixelRatio || 1;
@@ -229,7 +227,6 @@
         const resizeObserver = new ResizeObserver(() => resizeCanvas());
         resizeObserver.observe(canvasArea);
 
-        // UI Listeners
         canvasArea.addEventListener('mouseenter', () => customCursor.style.display = 'block');
         canvasArea.addEventListener('mouseleave', () => customCursor.style.display = 'none');
         document.addEventListener('mousemove', (e) => {
@@ -257,11 +254,10 @@
         document.getElementById('btn-dark').addEventListener('click', () => document.body.classList.add('dark-mode'));
         document.getElementById('btn-light').addEventListener('click', () => document.body.classList.remove('dark-mode'));
 
-        // MOTOR GRÁFICO (Dibuja texto animado frame por frame)
+        // MOTOR GRÁFICO ACTUALIZADO (True Kinetic Type Variable)
         function drawFrame() {
             if (!isExporting) requestAnimationFrame(drawFrame);
 
-            // Si está exportando, forzamos el tiempo exacto del frame para lograr un loop perfecto
             const currentTime = isExporting ? exportTime : performance.now();
 
             ctx.fillStyle = bgColorPicker.value;
@@ -275,7 +271,6 @@
             const fontFam = document.querySelector('.font-option.active').getAttribute('data-font');
             const textColor = textColorPicker.value;
 
-            ctx.font = `bold ${fontSize}px ${fontFam}`;
             ctx.fillStyle = textColor;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -284,9 +279,15 @@
             let startY = (canvasHeight - totalHeight) / 2 + fontSize / 2;
             let globalCharIndex = 0;
 
+            // ANIMACIÓN MÁS LENTA (3 segundos en lugar de 1.5s)
+            const duration = 3000; 
+
             lines.forEach(line => {
                 let lineWidth = 0;
                 const charWidths = [];
+                
+                // Medimos la línea con un peso estándar para mantener el tracking estable
+                ctx.font = `500 ${fontSize}px ${fontFam}`; 
                 for(let i=0; i<line.length; i++) {
                     const cw = ctx.measureText(line[i]).width;
                     charWidths.push(cw);
@@ -300,22 +301,28 @@
                     const char = line[i];
                     const cw = charWidths[i];
 
-                    // Matemáticas de la animación (Replica el CSS de 1.5s wave)
-                    const duration = 1500;
-                    let elapsed = currentTime - (globalCharIndex * 100); 
+                    // Desfase secuencial suave
+                    let elapsed = currentTime - (globalCharIndex * 180); 
                     elapsed = ((elapsed % duration) + duration) % duration; 
                     let progress = elapsed / duration; 
 
-                    let intensity = progress < 0.5 ? progress * 2 : (1 - progress) * 2;
-                    let ease = -(Math.cos(Math.PI * intensity) - 1) / 2; 
+                    // Onda senoidal para un movimiento fluido de ida y vuelta (0 -> 1 -> 0)
+                    let pulse = (Math.sin((progress * Math.PI * 2) - (Math.PI / 2)) + 1) / 2;
 
-                    let scale = 1 + (ease * 0.15);
-                    let yOffset = ease * -5;
+                    // EL NÚCLEO KINETIC: Interpolar el Font-Weight dinámicamente de 300 a 800
+                    let currentWeight = Math.floor(300 + (pulse * 500)); 
+                    
+                    // Escala tipográfica sutil acompañando al peso
+                    let scaleX = 1 + (pulse * 0.15); 
+                    let scaleY = 1 + (pulse * 0.05);
+                    let yOffset = pulse * -8; // Salto ligero
 
                     if (char !== ' ') {
                         ctx.save();
+                        // Asignamos el peso exacto para el frame actual
+                        ctx.font = `${currentWeight} ${fontSize}px ${fontFam}`;
                         ctx.translate(startX + cw/2, startY + yOffset);
-                        ctx.scale(scale, scale);
+                        ctx.scale(scaleX, scaleY);
                         ctx.fillText(char, 0, 0);
                         ctx.restore();
                     }
@@ -327,44 +334,32 @@
             });
         }
 
-        // EXPORTACIÓN AUTOMÁTICA
+        // EXPORTACIÓN AUTOMÁTICA EN ALTA RESOLUCIÓN
         exportBtn.addEventListener('click', () => {
             if (typeof gifshot === 'undefined') {
                 alert("Error: Librería de GIF no cargada."); return;
             }
 
             isExporting = true;
-            exportBtn.textContent = 'BUILDING GIF...';
+            exportBtn.textContent = 'BUILDING HIGH-RES GIF...';
             exportBtn.style.backgroundColor = 'var(--color-button-orange)';
             exportBtn.disabled = true;
 
             const frames = [];
-            const fps = 20; // Animación muy fluida
-            const duration = 1500; // Loop exacto de 1.5 segundos
-            const totalFrames = (duration / 1000) * fps; // 30 fotos
+            const fps = 20; 
+            const duration = 3000; // Actualizado a 3 segundos para que el loop GIF sea perfecto
+            const totalFrames = (duration / 1000) * fps; 
             const timeStep = duration / totalFrames;
 
-            // Preparamos un canvas temporal para reducir el tamaño del GIF y que procese rápido
-            let targetWidth = canvasWidth;
-            let targetHeight = canvasHeight;
-            if (targetWidth > 600) {
-                const ratio = 600 / targetWidth;
-                targetWidth = 600;
-                targetHeight = canvasHeight * ratio;
-            }
+            const targetWidth = canvas.width;
+            const targetHeight = canvas.height;
 
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = targetWidth;
-            tempCanvas.height = targetHeight;
-            const tCtx = tempCanvas.getContext('2d');
+            console.log(`Procesando GIF de ${targetWidth}x${targetHeight} píxeles... Esto puede tardar.`);
 
-            // Tomamos 30 fotos en milisegundos controlando el tiempo interno
             for (let i = 0; i < totalFrames; i++) {
                 exportTime = i * timeStep;
                 drawFrame(); 
-                tCtx.clearRect(0, 0, targetWidth, targetHeight);
-                tCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
-                frames.push(tempCanvas.toDataURL('image/png'));
+                frames.push(canvas.toDataURL('image/png'));
             }
 
             gifshot.createGIF({
@@ -372,24 +367,24 @@
                 gifWidth: targetWidth,
                 gifHeight: targetHeight,
                 interval: 1 / fps,
-                numWorkers: 2,
+                numWorkers: 4, // 4 procesadores en paralelo
             }, function(obj) {
                 if (!obj.error) {
                     const a = document.createElement('a');
                     a.href = obj.image;
-                    a.download = 'TypeType_Automated.gif';
+                    a.download = 'TypeType_Kinetic.gif';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                 } else {
-                    alert('Hubo un error procesando el GIF.');
+                    alert('Hubo un error procesando el GIF. La resolución nativa de tu pantalla podría ser demasiado grande para la memoria del navegador.');
                 }
                 
                 isExporting = false;
                 exportBtn.textContent = 'EXPORT GIF';
                 exportBtn.style.backgroundColor = 'var(--color-button-purple)';
                 exportBtn.disabled = false;
-                drawFrame(); // Reanudar animación en vivo
+                drawFrame(); 
             });
         });
 
