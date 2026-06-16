@@ -6,6 +6,7 @@
     <title>TYPE TYPE - Kinetic Typography Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Variable fonts for Canvas + Space Mono for UI -->
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400..800&family=Inter:wght@100..900&family=Pixelify+Sans:wght@400..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <style>
         /* CSS RESET & VARIABLES */
@@ -33,7 +34,7 @@
             --color-button-black: #000000;
 
             /* Typography and Spacing */
-            --font-ui: 'Space Mono', monospace; /* Updated to Space Mono */
+            --font-ui: 'Space Mono', monospace; 
             --font-canvas: 'Inter', sans-serif;
             --tracking-canvas: 0px; 
             --line-spacing: 10px;
@@ -79,7 +80,7 @@
 
         .logo {
             font-size: 26px;
-            font-weight: 700; /* Space Mono supports up to 700 */
+            font-weight: 700; 
             text-transform: uppercase;
             color: var(--color-outline);
             letter-spacing: 2px;
@@ -103,7 +104,7 @@
         .retro-button {
             display: block;
             width: 100%;
-            padding: 10px 15px;
+            padding: 15px;
             font-family: var(--font-ui);
             font-size: 14px;
             font-weight: 700;
@@ -211,17 +212,6 @@
         .color-input::-webkit-color-swatch { border: none; }
 
         .mode-switch { display: flex; gap: 10px; }
-        
-        .record-button {
-            width: 40px; height: 40px;
-            background-color: #ff0000;
-            border-radius: 50%;
-            border: 3px solid #000;
-            margin: 0 auto;
-            cursor: pointer;
-        }
-        .record-button.recording { animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
         /* MAIN CANVAS */
         .main-content {
@@ -403,12 +393,8 @@
             <button id="btn-dark" class="retro-button black" style="width:50%;">DARK</button>
         </div>
 
-        <div class="control-group" style="text-align: center;">
-            <label class="control-label">Record 15s</label>
-            <div class="record-button" id="record-btn"></div>
-        </div>
-
-        <button class="retro-button purple">Export MP4</button>
+        <!-- Export button implemented with Screen Capture API -->
+        <button id="export-btn" class="retro-button purple">EXPORT GIF</button>
     </aside>
 
     <main class="main-content">
@@ -441,6 +427,7 @@
         const aspectButtons = document.querySelectorAll('.aspect-button');
         const canvasArea = document.getElementById('canvas-area');
         const customCursor = document.getElementById('custom-cursor');
+        const exportBtn = document.getElementById('export-btn');
         
         function renderKineticText(text) {
             kineticContainer.innerHTML = ''; 
@@ -524,8 +511,47 @@
         document.getElementById('btn-dark').addEventListener('click', () => document.body.classList.add('dark-mode'));
         document.getElementById('btn-light').addEventListener('click', () => document.body.classList.remove('dark-mode'));
 
-        document.getElementById('record-btn').addEventListener('click', function() {
-            this.classList.toggle('recording');
+        // Export Function using Screen Capture API
+        exportBtn.addEventListener('click', async function() {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { preferCurrentTab: true },
+                    audio: false
+                });
+                
+                const mediaRecorder = new MediaRecorder(stream);
+                const chunks = [];
+                
+                mediaRecorder.ondataavailable = e => chunks.push(e.data);
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'TypeType_Kinetic_Export.webm';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    exportBtn.textContent = 'EXPORT GIF';
+                    exportBtn.style.backgroundColor = 'var(--color-button-purple)';
+                };
+                
+                mediaRecorder.start();
+                exportBtn.textContent = 'RECORDING...';
+                exportBtn.style.backgroundColor = 'var(--color-button-pink)';
+                
+                // Record for exactly 3.5 seconds to capture a solid loop
+                setTimeout(() => {
+                    mediaRecorder.stop();
+                    stream.getTracks().forEach(track => track.stop()); // Stop screen sharing
+                }, 3500);
+                
+            } catch (err) {
+                console.error("Recording error:", err);
+                alert("Permission is required to capture the animation. Please allow tab recording when prompted.");
+            }
         });
     </script>
 </body>
